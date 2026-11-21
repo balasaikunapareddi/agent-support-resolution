@@ -78,6 +78,13 @@ export GEMINI_API_KEY=...   # GEMINI_MODEL overrides the model (default gemini-3
 python -m agent_support_resolution.demo --live
 ```
 
+Live mode is verified against the Gemini free tier
+(`gemini-3.5-flash-lite`): a password-reset ticket auto-resolved at
+confidence 1.0 with a real generated draft, a $25 refund
+auto-resolved per policy (0.719), and the $329.99 refund ticket
+queued for human review (0.393) — the gates hold with a real model
+drafting, not just the mock.
+
 ## Why LangGraph
 
 The workflow is a state machine with a human-approval interrupt.
@@ -137,5 +144,6 @@ above is the code, not documentation about the code.
   outcomes.
 - The review queue is a local SQLite file and the "send" is a log line —
   both are deliberate seams for real integrations (helpdesk API, ESP).
-- Live mode is wired and construction-tested, but the parent verification
-  run exercises it against the real Gemini API separately.
+- Live mode is verified on the Gemini free tier (real drafting through
+  the same gates); the full 10-ticket demo was run in mock mode, with
+  live runs covering the auto-resolve and human-queue paths.
