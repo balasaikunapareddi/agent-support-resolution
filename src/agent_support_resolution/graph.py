@@ -292,11 +292,23 @@ def build_graph(*, kb, drafter, audit: AuditLog, queue: ReviewQueue,
 
 
 class SupportPipeline:
-    """Facade: submit tickets, work the review queue, inspect the audit.
+    """The support-resolution agent: submit tickets, work the review queue, inspect the audit.
 
-    ``workdir`` holds the audit log, outbox, review DB, and (optionally)
-    the SQLite checkpointer. ``live=True`` swaps the mock drafter for
-    Gemini; everything else is identical.
+    The agent loop is the LangGraph state machine built by
+    ``build_graph()`` above:
+
+        intake -> classify -> retrieve_kb -> draft -> policy_check
+            -> confidence_gate -> auto_resolve -> send -> audit
+                               -> human_review -> send -> audit
+                                               -> audit (rejected)
+
+    ``submit()`` runs a ticket until it is sent, rejected, or paused at
+    the human-review interrupt; ``approve()`` / ``edit()`` / ``reject()``
+    resume it. ``workdir`` holds the audit log, outbox, review DB, and
+    (optionally) the SQLite checkpointer. ``live=True`` swaps the mock
+    drafter for Gemini (system prompt in ``prompts.py``); everything
+    else — classification, retrieval, policy, confidence gate — is
+    identical deterministic code.
     """
 
     def __init__(self, workdir: str | Path, *, live: bool = False,

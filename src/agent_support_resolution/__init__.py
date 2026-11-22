@@ -5,7 +5,7 @@ Classify -> retrieve -> draft -> policy-as-code check -> confidence gate
 audit trail. No API key or network needed in mock mode.
 """
 
-from .graph import SupportPipeline
+from .agent import SupportPipeline
 from .models import Ticket
 
 __all__ = ["SupportPipeline", "Ticket"]

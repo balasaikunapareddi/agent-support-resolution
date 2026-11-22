@@ -56,6 +56,29 @@ stateDiagram-v2
 - **audit** — every node appends to an append-only JSONL audit log as it
   runs: transitions, tool calls, policy decisions, approvers, timestamps.
 
+## Project structure
+
+```
+src/agent_support_resolution/
+  agent.py       SupportPipeline — the agent's front door (submit / approve / edit / reject)
+  prompts.py     drafting system prompt + user template (behavior only)
+  graph.py       LangGraph state machine: nodes, edges, checkpointed interrupt
+  tools.py       typed tools the graph nodes call (pydantic schemas)
+  models.py      domain models and structured errors
+  classifier.py  deterministic ticket classification (no model calls)
+  kb.py          knowledge base + local TF-IDF retrieval
+  drafting.py    mock drafter + optional live Gemini drafter
+  policy.py      policy-as-code: rules a draft must pass before sending
+  confidence.py  confidence scoring and the auto-resolve gate
+  review.py      human review queue (SQLite)
+  audit.py       append-only JSONL audit log
+  outbox.py      simulated send (append-only outbox log)
+  data.py        bundled synthetic tickets for demo/tests
+  evals.py       labeled eval set + runner
+  demo.py        one-command demo
+tests/           65 offline tests
+```
+
 ## Quickstart
 
 ```bash
